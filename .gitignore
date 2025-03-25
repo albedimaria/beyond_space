@@ -1,0 +1,8 @@
+env
+models/
+*.wav
+dataset/
+keep/
+script/
+sounds/
+__pycache__/

@@ -1,0 +1,7 @@
+torch
+soundfile
+librosa
+numpy
+argparse
+torch
+flask
