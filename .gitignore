@@ -6,3 +6,5 @@ keep/
 script/
 sounds/
 __pycache__/
+/beyond_space/
+/marinemammals.ts

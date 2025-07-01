@@ -4,7 +4,6 @@ import soundfile as sf
 from librosa import resample
 import numpy as np
 import argparse
-import random
 
 fs = 48000
 
@@ -55,9 +54,11 @@ def get_model_ratio_and_dim(model):
     x_len = 2**14
     n_channels = 1 # mono
     x = torch.zeros(1, n_channels, x_len)
-    z = model.encode(x)
+    with torch.no_grad():
+        z = model.encode(x)
     downsampling_ratio = x_len // z.shape[-1]
-    return downsampling_ratio, z.size(1)
+    return downsampling_ratio,  z.size(1)
+
 
 def time(dur, ratio):
     total_audio_samples = dur * fs
