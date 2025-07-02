@@ -86,6 +86,20 @@ def apply_scale_and_bias(latent, scale, bias):
         latent[:, i, :] = latent[:, i, :] * scale[i] + bias[i]
     return latent
 
+
+# dummy function to be replaced
+def select_latent(latent1, latent2):
+    """
+    Dummy function: for now returns latent1 truncated to min length.
+    Later replace with actual selection logic.
+    """
+    min_len = min(latent1.size(-1), latent2.size(-1))
+    latent1_trunc = latent1[:, :, :min_len]
+    latent2_trunc = latent2[:, :, :min_len]
+
+    # For now, just return latent1_trunc as placeholder
+    return latent1_trunc
+
 # updated with 2 inputs
 def get_rave_output(model, mode, duration, temperature, input_file1, input_file2, output_file, downsampling_ratio, scale, bias,
                     noise_amount):
@@ -121,7 +135,7 @@ def get_rave_output(model, mode, duration, temperature, input_file1, input_file2
         print("Latent 1 shape:", latent1.shape)
         print("Latent 2 shape:", latent2.shape)
 
-        latent_dim = latent1.size(1)
+        latent_dim1 = latent1.size(1)
         latent1 = apply_scale_and_bias(latent1, scale, bias)
         if noise_amount != 0.0:
             latent1 = latent1 + noise_amount * torch.randn_like(latent1)
@@ -131,19 +145,17 @@ def get_rave_output(model, mode, duration, temperature, input_file1, input_file2
         if noise_amount != 0.0:
             latent2 = latent2 + noise_amount * torch.randn_like(latent2)
 
-        # deconding the 2 inputs
-        audio1 = decode(model, latent1)
-        audio2 = decode(model, latent2)
+        # select a latent (dummy function for now)
+        selected_latent = select_latent(latent1, latent2)
 
-        # writing the 2 outputs
+        # decode and write single output
+        audio = decode(model, selected_latent)
+
         timestamp = datetime.datetime.now().strftime("%H%M%S")
-        output_file1 = f"output1_{timestamp}.wav"
-        output_file2 = f"output2_{timestamp}.wav"
+        output_file_final = f"output_{timestamp}.wav"
+        write_audio_to_file(audio, output_file_final)
 
-        write_audio_to_file(audio1, output_file1)
-        write_audio_to_file(audio2, output_file2)
-
-        print(f"Audio 1 and Audio 2 saved to {output_file1} and {output_file2}")
+        print(f"Audio saved to {output_file_final}")
 
 
 def main():
