@@ -1,7 +1,12 @@
 import streamlit as st
 import torch
+import sys
+import os
 from tempfile import NamedTemporaryFile
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from gen_with_two_inputs import get_rave_output, get_model_ratio_and_dim
+
 
 # st.title("beyond space")
 st.markdown("<h1 style='text-align: center;'>beyond space</h1>", unsafe_allow_html=True)
