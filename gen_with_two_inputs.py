@@ -56,6 +56,7 @@ def decode(model, latent):
     Decode a latent representation into audio.
     """
     with torch.no_grad():
+        print(f"Decoding latent of shape: {latent.shape}")
         audio = model.decode(latent)
     return audio
 
@@ -87,18 +88,45 @@ def apply_scale_and_bias(latent, scale, bias):
     return latent
 
 
-# dummy function to be replaced
-def select_latent(latent1, latent2):
-    """
-    Dummy function: for now returns latent1 truncated to min length.
-    Later replace with actual selection logic.
-    """
-    min_len = min(latent1.size(-1), latent2.size(-1))
-    latent1_trunc = latent1[:, :, :min_len]
-    latent2_trunc = latent2[:, :, :min_len]
 
-    # For now, just return latent1_trunc as placeholder
-    return latent1_trunc
+# dummy function to be replaced
+def generate_latent(latent1, latent2, index=0.6):
+    """
+    Generate a latent point between latent1 and latent2 based on the index value.
+    
+    Args:
+        latent1: First latent point of shape [1, 16, 36]
+        latent2: Second latent point of shape [1, 16, 36]  
+        index: Interpolation factor (0=latent1, 1=latent2, 0.5=midpoint)
+    
+    Returns:
+        tuple: (interpolated_latent, distance_from_latent1, distance_from_latent2)
+    """
+    # Ensure index is between 0 and 1
+    index = max(0.0, min(1.0, index))
+    min_len = min(latent1.size(-1), latent2.size(-1))
+    latent1 = latent1[:, :, :min_len]
+    latent2 = latent2[:, :, :min_len]
+    
+    
+    # Create a copy of latent1 to start with
+    interpolated_latent = latent1.clone()
+    
+    # Interpolate only along the second dimension (16 dims)
+    # Keep dimensions 0 and 2 unchanged from latent1
+    interpolated_latent[:, :, :] = latent1[:, :, :] + index * (latent2[:, :, :] - latent1[:, :, :])
+    
+    # Calculate distances (using L2 norm along the interpolated dimension)
+    # Distance is calculated only on the 16-dimensional space that was interpolated
+    diff1 = interpolated_latent - latent1
+    diff2 = interpolated_latent - latent2
+    
+    # Calculate L2 distance along the 16-dimensional axis
+    distance_from_latent1 = torch.norm(diff1[:, :, :], dim=1).mean().item()
+    distance_from_latent2 = torch.norm(diff2[:, :, :], dim=1).mean().item()
+    
+    return interpolated_latent, distance_from_latent1, distance_from_latent2
+
 
 # updated with 2 inputs
 def get_rave_output(model, mode, duration, temperature, input_file1, input_file2, output_file, downsampling_ratio, scale, bias,
@@ -146,9 +174,11 @@ def get_rave_output(model, mode, duration, temperature, input_file1, input_file2
             latent2 = latent2 + noise_amount * torch.randn_like(latent2)
 
         # select a latent (dummy function for now)
-        selected_latent = select_latent(latent1, latent2)
+        selected_latent,d1,d2 = generate_latent(latent1, latent2, index=0.4)
+
 
         # decode and write single output
+        print(f"Selected latent shape: {selected_latent.shape}")
         audio = decode(model, selected_latent)
 
         timestamp = datetime.datetime.now().strftime("%H%M%S")
