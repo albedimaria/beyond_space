@@ -90,7 +90,7 @@ def apply_scale_and_bias(latent, scale, bias):
 
 
 # dummy function to be replaced
-def generate_latent(latent1, latent2, index=0.6):
+def generate_latent(latent1, latent2, index):
     """
     Generate a latent point between latent1 and latent2 based on the index value.
     
@@ -132,7 +132,7 @@ def generate_latent(latent1, latent2, index=0.6):
 
 # updated with 2 inputs
 def get_rave_output(model, mode, duration, temperature, input_file1, input_file2, output_file, downsampling_ratio, scale, bias,
-                    noise_amount):
+                    noise_amount, index):
     model.eval()
 
     if mode == 'prior' and not hasattr(model, 'prior'):
@@ -176,7 +176,7 @@ def get_rave_output(model, mode, duration, temperature, input_file1, input_file2
             latent2 = latent2 + noise_amount * torch.randn_like(latent2)
 
         # select a latent (dummy function for now)
-        selected_latent,d1,d2 = generate_latent(latent1, latent2, index=0.4)
+        selected_latent,d1,d2 = generate_latent(latent1, latent2, index)
 
 
         # decode and write single output
