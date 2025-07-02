@@ -105,7 +105,7 @@ if st.button("Process"):
             """
             st.markdown(update_script, unsafe_allow_html=True)
 
-            model_path = "organ.ts"
+            model_path = "../organ.ts"
             model = torch.jit.load(model_path)
             downsampling_ratio, latent_dim = get_model_ratio_and_dim(model)
 

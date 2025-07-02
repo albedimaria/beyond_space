@@ -104,6 +104,8 @@ def generate_latent(latent1, latent2, index=0.6):
     """
     # Ensure index is between 0 and 1
     index = max(0.0, min(1.0, index))
+
+    # Ensure latent1 and latent2 have the same length
     min_len = min(latent1.size(-1), latent2.size(-1))
     latent1 = latent1[:, :, :min_len]
     latent2 = latent2[:, :, :min_len]
