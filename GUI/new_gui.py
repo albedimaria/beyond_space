@@ -3,6 +3,7 @@ import torch
 import sys
 import os
 from tempfile import NamedTemporaryFile
+import datetime
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from gen_with_two_inputs import get_rave_output, get_model_ratio_and_dim
@@ -140,6 +141,11 @@ with col_upload1:
                 tmp1.flush()
                 tmp2.flush()
 
+                timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                session_folder = os.path.join("outputs", f"session_{timestamp}")
+                os.makedirs("outputs", exist_ok=True)
+                os.makedirs(session_folder, exist_ok=True)
+
                 # Define sweep range
                 indices = [i / (NUM_STEPS - 1) for i in range(NUM_STEPS)]
 
@@ -161,7 +167,8 @@ with col_upload1:
                         scale=[1.0] * latent_dim,
                         bias=[0.0] * latent_dim,
                         noise_amount=0.0,
-                        index=idx
+                        index=idx,
+                        output_folder=session_folder
                     )
 
                     output_files.append(output)
@@ -193,6 +200,11 @@ with col_upload2:
                 tmp1.flush()
                 tmp2.flush()
 
+                timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                session_folder = os.path.join("outputs", f"session_{timestamp}")
+                os.makedirs("outputs", exist_ok=True)
+                os.makedirs(session_folder, exist_ok=True)
+
                 # Call your backend function with slider index
                 get_rave_output(
                     model=model,
@@ -206,7 +218,8 @@ with col_upload2:
                     scale=[1.0] * latent_dim,
                     bias=[0.0] * latent_dim,
                     noise_amount=0.0,
-                    index=index
+                    index=index,
+                    output_folder=session_folder
                 )
 
 
