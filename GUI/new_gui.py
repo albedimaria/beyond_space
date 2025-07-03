@@ -1,5 +1,8 @@
+import numpy as np
+import sounddevice as sd
 import streamlit as st
 import torch
+import soundfile as sf
 import sys
 import os
 from tempfile import NamedTemporaryFile
@@ -130,29 +133,21 @@ st.markdown("<br>", unsafe_allow_html=True)  # optional spacing
 
 with col_upload1:
     if st.button("automatic processing"):
-
         if uploaded_file1 and uploaded_file2:
-
             with NamedTemporaryFile(delete=False, suffix=".wav") as tmp1, \
                  NamedTemporaryFile(delete=False, suffix=".wav") as tmp2:
-
                 tmp1.write(uploaded_file1.read())
                 tmp2.write(uploaded_file2.read())
                 tmp1.flush()
                 tmp2.flush()
-
                 timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
                 session_folder = os.path.join("outputs", f"session_{timestamp}")
                 os.makedirs("outputs", exist_ok=True)
                 os.makedirs(session_folder, exist_ok=True)
-
                 # Define sweep range
                 indices = [i / (NUM_STEPS - 1) for i in range(NUM_STEPS)]
-
                 progress_bar = st.progress(0)
-
                 output_files = []
-
                 # Loop over indices
                 for i, idx in enumerate(indices):
                     output = get_rave_output(
@@ -170,19 +165,89 @@ with col_upload1:
                         index=idx,
                         output_folder=session_folder
                     )
-
                     output_files.append(output)
-
                     # Update progress bar
                     progress_bar.progress((i + 1) / NUM_STEPS)
-
+                
+                # Create master file by combining segments
+                master_audio_segments = []
+                segment_duration = None
+                sample_rate = None
+                
+                for i, audio_file in enumerate(output_files):
+                    try:
+                        if os.path.exists(audio_file):
+                            # Load the audio file
+                            audio_data, sr = sf.read(audio_file)
+                            
+                            # Set sample rate from first file
+                            if sample_rate is None:
+                                sample_rate = sr
+                            
+                            # Calculate segment length (1/10th of the audio)
+                            if segment_duration is None:
+                                segment_duration = len(audio_data) // NUM_STEPS
+                            
+                            # Extract the i-th segment (1/10th) from the i-th audio file
+                            start_idx = i * segment_duration
+                            end_idx = min((i + 1) * segment_duration, len(audio_data))
+                            
+                            segment = audio_data[start_idx:end_idx]
+                            master_audio_segments.append(segment)
+                            
+                        else:
+                            print(f"File not found: {audio_file}")
+                    except Exception as e:
+                        print(f"Error processing {audio_file}: {e}")
+                
+                # Combine all segments into master file
+                if master_audio_segments:
+                    master_audio = np.concatenate(master_audio_segments)
+                    master_file_path = os.path.join(session_folder, "master_transition.wav")
+                    sd.play(audio_data, sample_rate)
+                    sd.wait()
+                    
+                    # Save master file
+                    sf.write(master_file_path, master_audio, sample_rate)
+                    print(f"Master file created: {master_file_path}")
+                
                 # Display all outputs after processing
                 with st.expander("all generated outputs", expanded=True):
                     for f in output_files:
+                        # Play the audio file
+                        try:
+                            if os.path.exists(f):
+                                # Load and play the audio
+                                audio_data, sample_rate = sf.read(f)
+                                print(f"Playing: {f}")
+                                #sd.play(audio_data, sample_rate)
+                                #sd.wait()  # Wait for playback to finish
+                                #print(f"Finished playing: {f}")
+                            else:
+                                print(f"File not found: {f}")
+                        except Exception as e:
+                            print(f"Error playing {f}: {e}")
+                       
+                        # Display in Streamlit
                         st.audio(f)
-
-                st.success(f"transition completed")
-
+                        print(f)
+                
+                # Display master file
+                if master_audio_segments:
+                    st.subheader("Master Transition File")
+                    st.audio(master_file_path)
+                    
+                    # Play master file
+                    try:
+                        master_data, master_sr = sf.read(master_file_path)
+                        print(f"Playing master file: {master_file_path}")
+                        sd.play(master_data, master_sr)
+                        sd.wait()
+                        print("Finished playing master file")
+                    except Exception as e:
+                        print(f"Error playing master file: {e}")
+                
+                st.success(f"transition completed with master file")
         else:
             st.warning("please upload both input files.")
 
