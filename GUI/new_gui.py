@@ -25,8 +25,8 @@ NUM_STEPS = 10
 # ==========================
 # Title
 # ==========================
-st.markdown("<h1 style='text-align: center;'>beyond space</h1>", unsafe_allow_html=True)
-st.markdown("<h3 style='text-align: center;'>rave latent space explorer generation</h3>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; font-style: italic;'>beyond space</h1>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align: center; font-style: italic;'>rave latent space explorer generation</h3>", unsafe_allow_html=True)
 st.write("")
 st.write("")
 st.write("")
@@ -177,7 +177,7 @@ with col_upload1:
                     progress_bar.progress((i + 1) / NUM_STEPS)
 
                 # Display all outputs after processing
-                with st.expander("All generated outputs", expanded=True):
+                with st.expander("all generated outputs", expanded=True):
                     for f in output_files:
                         st.audio(f)
 
@@ -206,7 +206,7 @@ with col_upload2:
                 os.makedirs(session_folder, exist_ok=True)
 
                 # Call your backend function with slider index
-                get_rave_output(
+                output = get_rave_output(
                     model=model,
                     mode="encode",
                     duration=3.0,
@@ -221,6 +221,12 @@ with col_upload2:
                     index=index,
                     output_folder=session_folder
                 )
+
+                # Display all outputs after processing
+                with st.expander("all generated outputs", expanded=True):
+                    st.audio(output)
+
+                st.success(f"generation completed")
 
 
         else:

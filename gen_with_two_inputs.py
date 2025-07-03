@@ -4,7 +4,7 @@ import soundfile as sf
 from librosa import resample
 import numpy as np
 import argparse
-import datetime
+import datetime, os
 
 fs = 48000
 
@@ -132,13 +132,14 @@ def generate_latent(latent1, latent2, index):
 
 # updated with 2 inputs
 def get_rave_output(model, mode, duration, temperature, input_file1, input_file2, output_file, downsampling_ratio, scale, bias,
-                    noise_amount, index):
+                    noise_amount, index, output_folder):
     model.eval()
 
     if mode == 'prior' and not hasattr(model, 'prior'):
         print(f"The model does not have a prior method.")
         exit()
 
+    # not fully working
     if mode == 'prior':
         if duration is None or temperature is None:
             print("Error: --duration and --temperature are required for prior mode.")
@@ -154,6 +155,8 @@ def get_rave_output(model, mode, duration, temperature, input_file1, input_file2
         audio = decode(model, latent)
         write_audio_to_file(audio, output_file)
         print(f"Audio saved to {output_file}")
+
+
 
     elif mode == 'encode':
         if input_file1 is None or input_file2 is None:
@@ -184,10 +187,15 @@ def get_rave_output(model, mode, duration, temperature, input_file1, input_file2
         audio = decode(model, selected_latent)
 
         timestamp = datetime.datetime.now().strftime("%H%M%S")
-        output_file_final = f"output_{timestamp}.wav"
+        output_file_final = os.path.join(output_folder, f"output_{int(index * 100)}_{timestamp}.wav")
         write_audio_to_file(audio, output_file_final)
 
         print(f"Audio saved to {output_file_final}")
+
+        return output_file_final
+
+    return None
+
 
 
 def main():
