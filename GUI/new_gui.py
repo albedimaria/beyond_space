@@ -24,8 +24,7 @@ st.markdown("<h3 style='text-align: center;'>rave latent space explorer generati
 st.write("")
 st.write("")
 st.write("")
-st.write("")
-st.write("")
+
 
 # ==========================
 # Slider for index + timeline above
@@ -106,44 +105,54 @@ with col2:
     st.markdown(timeline_html, unsafe_allow_html=True)
 
     st.write("")
-    st.write("")
-    st.write("")
 
 # ==========================
 # File uploaders
 # ==========================
-uploaded_file1 = st.file_uploader("Upload first input WAV file", type=["wav"])
-uploaded_file2 = st.file_uploader("Upload second input WAV file", type=["wav"])
+col_upload1, col_upload2 = st.columns(2)
 
-# Process button
-if st.button("Process"):
-    if uploaded_file1 and uploaded_file2:
+with col_upload1:
+    uploaded_file1 = st.file_uploader("Upload first input WAV file", type=["wav"])
 
-        with NamedTemporaryFile(delete=False, suffix=".wav") as tmp1, \
-             NamedTemporaryFile(delete=False, suffix=".wav") as tmp2:
+with col_upload2:
+    uploaded_file2 = st.file_uploader("Upload second input WAV file", type=["wav"])
 
-            tmp1.write(uploaded_file1.read())
-            tmp2.write(uploaded_file2.read())
-            tmp1.flush()
-            tmp2.flush()
+# ==========================
+# Process button ABOVE
+# ==========================
+st.markdown("<br>", unsafe_allow_html=True)  # optional spacing
+col4, col5, col6 = st.columns([4.3, 1.4, 4.3])
 
-            # Call your backend function with slider index
-            get_rave_output(
-                model=model,
-                mode="encode",
-                duration=3.0,
-                temperature=1.0,
-                input_file1=tmp1.name,
-                input_file2=tmp2.name,
-                output_file="output.wav",
-                downsampling_ratio=downsampling_ratio,
-                scale=[1.0] * latent_dim,
-                bias=[0.0] * latent_dim,
-                noise_amount=0.0,
-                index=index  # <<<<< HERE: pass GUI slider value
-            )
+with col5:
+    if st.button("Process"):
 
-            st.success("Processing complete. Check generated output file.")
+        if uploaded_file1 and uploaded_file2:
 
-    else:
-        st.warning("Please upload both input files.")
+            with NamedTemporaryFile(delete=False, suffix=".wav") as tmp1, \
+                 NamedTemporaryFile(delete=False, suffix=".wav") as tmp2:
+
+                tmp1.write(uploaded_file1.read())
+                tmp2.write(uploaded_file2.read())
+                tmp1.flush()
+                tmp2.flush()
+
+                # Call your backend function with slider index
+                get_rave_output(
+                    model=model,
+                    mode="encode",
+                    duration=3.0,
+                    temperature=1.0,
+                    input_file1=tmp1.name,
+                    input_file2=tmp2.name,
+                    output_file="output.wav",
+                    downsampling_ratio=downsampling_ratio,
+                    scale=[1.0] * latent_dim,
+                    bias=[0.0] * latent_dim,
+                    noise_amount=0.0,
+                    index=index
+                )
+
+                st.success("Processing complete. Check generated output file.")
+
+        else:
+            st.warning("Please upload both input files.")
