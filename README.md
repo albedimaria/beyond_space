@@ -8,6 +8,7 @@ This project builds upon the original RAVE latent space explorer, extending its 
 
 These improvements make the system more suitable for creative exploration and real-time audio generation, offering a more interactive and user-friendly experience compared to the original fork.
 
+
 ## Notes
 
 - The script assumes a target sample rate of 48 kHz.
