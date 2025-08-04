@@ -12,11 +12,11 @@ model_path = ''
 downsampling_ratio = None
 latent_dim = 0
 
-STATIC_FOLDER = os.path.join(os.getcwd(), 'static')
+STATIC_FOLDER = os.path.join(os.getcwd(), '../static')
 if not os.path.exists(STATIC_FOLDER):
     os.makedirs(STATIC_FOLDER)
 
-MODEL_FOLDER = os.path.join(os.getcwd(), 'models/')
+MODEL_FOLDER = os.path.join(os.getcwd(), '../models/')
 if not os.path.exists(MODEL_FOLDER):
     os.makedirs(MODEL_FOLDER)
 @app.route('/', methods=['GET'])

@@ -3,7 +3,7 @@ import datetime
 import streamlit as st
 
 from utils.gen_with_two_inputs import get_rave_output
-from app.config import MODEL, NUM_STEPS, DURATION, TEMPERATURE, downsampling_ratio, latent_dim
+from app_def.config import MODEL, NUM_STEPS, DURATION, TEMPERATURE, downsampling_ratio, latent_dim
 
 def create_session_folder(base_dir="audio_outputs"):
     """create session folder with timestamp"""

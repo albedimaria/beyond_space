@@ -11,6 +11,9 @@ fs = 48000
 # dual input version: encodes two input files separately.
 # added --input_file1 and --input_file2.
 
+# old version, this file is not used anymore
+# the app relies on streamlit and not CLI
+
 
 def sample_prior(model, n_steps, temperature):
     """

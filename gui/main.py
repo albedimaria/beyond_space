@@ -2,13 +2,11 @@ import os, sys
 from tempfile import NamedTemporaryFile
 import streamlit as st
 
-from processing import process_files
-from timeline import render_timeline
-
-
+# needed with streamlit
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-
+from timeline import render_timeline
+from app_def.processing import process_files
 
 # ==========================
 # ui: page reader
@@ -60,7 +58,7 @@ if uploaded_file1 and uploaded_file2:
         if col_upload1.button("automatic processing"):
             outputs, session_folder = process_files(tmp1.name, tmp2.name, automatic=True)
             st.success("transition completed")
-            with st.expander("all generated outputs", expanded=True):
+            with st.expander("all generated audio_outputs", expanded=True):
                 for f in outputs:
                     if os.path.exists(f):
                         st.audio(f)
@@ -68,7 +66,7 @@ if uploaded_file1 and uploaded_file2:
         if col_upload2.button("manual processing"):
             outputs, session_folder = process_files(tmp1.name, tmp2.name, index=slider_value, automatic=False)
             st.success("generation completed")
-            with st.expander("all generated outputs", expanded=True):
+            with st.expander("all generated audio_outputs", expanded=True):
                 for f in outputs:
                     if os.path.exists(f):
                         st.audio(f)
