@@ -10,7 +10,6 @@ fs = 48000
 
 # dual input version: encodes two input files separately.
 # added --input_file1 and --input_file2.
-# for now, just prints their latent shapes.
 
 
 def sample_prior(model, n_steps, temperature):
@@ -222,7 +221,7 @@ def main():
 
     args = parser.parse_args()
 
-    model = torch.jit.load(args.model)
+    model = torch.jit.load(args.MODEL)
     downsampling_ratio, latent_dim = get_model_ratio_and_dim(model)
 
     # Give the same value to every dim

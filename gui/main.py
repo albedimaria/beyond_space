@@ -2,7 +2,6 @@ import os, sys
 from tempfile import NamedTemporaryFile
 import streamlit as st
 
-from config import NUM_STEPS
 from processing import process_files
 from timeline import render_timeline
 
