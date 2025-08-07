@@ -4,10 +4,10 @@ function ShapeLabels({ layout, percentuali }) {
     return layout.points.map(({ x, y }, i) => (
         <text
             key={`label-${i}`}
-            x={x + 24}
-            y={y - 10}
+            x={x - 10}
+            y={y + 38}
             fontSize="14"
-            fill="#333"
+            fill="white"
         >
             {percentuali[i]}%
         </text>
