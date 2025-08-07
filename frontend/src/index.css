@@ -1,0 +1,137 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: transparent;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===============================
+   GLOBAL RESET + BASE THEME
+================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Inter', sans-serif;
+  background-color: #0d0d0d;
+  color: #f0f0f0;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+/* ===============================
+   LAYOUT
+================================= */
+
+.container {
+  text-align: center;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding-top: 40px;
+}
+
+
+/* ===============================
+   SHAPE VISUALIZER (SVG)
+================================= */
+
+svg {
+  width: 300px;
+  height: 300px;
+  border: 1px solid #444;
+  margin-top: 30px;
+  border-radius: 8px;
+  background-color: #111;
+}
+
+svg circle {
+  transition: transform 0.3s ease;
+}
+
+svg circle:hover {
+  transform: scale(1.1);
+  cursor: pointer;
+}
+
+svg line {
+  transition: stroke 0.3s ease;
+}
+
+svg line:hover {
+  stroke: #6aa0d4;
+}
+
+/* ===============================
+   FILE UPLOADER
+================================= */
+
+.upload-btn {
+  background-color: #3f4e85;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+}
+
+.upload-btn:hover {
+  background-color: #4e79a7;
+}
+
+.upload-btn.disabled {
+  background-color: #5c5c5c;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* ===============================
+   SHAPE BOARD
+================================= */
+
+.shape-board {
+  width: 500px;
+  height: 500px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  background-color: transparent;
+  margin: 30px auto;
+}
+
+
+
+/* ===============================
+   FUTURE ANIMATIONS
+================================= */
+
+/* Placeholder per animazioni future */
+.fade-in {
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
