@@ -11,7 +11,7 @@ function ShapeVisualizer({ files }) {
     const [percentuali, setPercentuali] = useState([]);
 
     const handleClick = (clickPoint) => {
-        const perc = calculatePercentages(clickPoint, layout?.points || []);
+        const perc = calculatePercentages(clickPoint, layout.points, {mode: "inverse"});
         if (perc) {
             setRefPoint(clickPoint);
             setPercentuali(perc);
