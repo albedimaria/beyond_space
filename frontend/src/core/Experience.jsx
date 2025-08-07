@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import FileUploader from "../components/FileUploader";
-import ShapeVisualizer from "../components/ShapeVisualizer";
+import ShapeVisualizer from "../components/ShapeVisualizer/ShapeVisualizer.jsx";
 
 function Experience() {
     const [files, setFiles] = useState([]);

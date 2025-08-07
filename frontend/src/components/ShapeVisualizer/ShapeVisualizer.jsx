@@ -1,5 +1,43 @@
+import ShapeCanvas from "./ShapeCanvas";
+import { layouts } from "./shapeLayouts";
+import { useState } from "react";
+import {calculatePercentages} from "../../utils/calculatePercentages.js";
+
+function ShapeVisualizer({ files }) {
+    const count = files.length;
+    const layout = layouts[count];
+
+    const [refPoint, setRefPoint] = useState(null);
+    const [percentuali, setPercentuali] = useState([]);
+
+    const handleClick = (clickPoint) => {
+        const perc = calculatePercentages(clickPoint, layout?.points || []);
+        if (perc) {
+            setRefPoint(clickPoint);
+            setPercentuali(perc);
+        } else {
+            setRefPoint(null);
+            setPercentuali([]);
+        }
+    };
+
+    return (
+        <ShapeCanvas
+            layout={layout}
+            files={files}
+            percentuali={percentuali}
+            onSvgClick={handleClick}
+        />
+    );
+}
+
+export default ShapeVisualizer;
+
+
+
+/*
 import { motion } from "framer-motion";
-import { layouts, circleProps } from "./shapeLayout.js";
+import { layouts, circleProps } from "./shapeLayouts.js";
 
 function ShapeVisualizer({ files }) {
 
@@ -41,7 +79,9 @@ function ShapeVisualizer({ files }) {
                             initial={{ opacity: 0, scale: 0 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 0.5, delay: i * 0.05 }}
-                        />
+                        >
+                            <title>{files[i]?.name}</title>
+                        </motion.circle>
                     ))}
 
                 </>
@@ -51,3 +91,4 @@ function ShapeVisualizer({ files }) {
 }
 
 export default ShapeVisualizer;
+*/
