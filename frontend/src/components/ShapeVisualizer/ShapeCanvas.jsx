@@ -2,7 +2,7 @@ import ShapeLines from "./ShapeLines";
 import ShapeCircles from "./ShapeCircles";
 import ShapeLabels from "./ShapeLabels";
 
-function ShapeCanvas({ layout, files, percentuali, onSvgClick }) {
+function ShapeCanvas({ layout, files, percentages, onSvgClick }) {
     const handleSvgClick = (e) => {
         if (!layout) return;
         const rect = e.currentTarget.getBoundingClientRect();
@@ -23,7 +23,7 @@ function ShapeCanvas({ layout, files, percentuali, onSvgClick }) {
                 <>
                     <ShapeLines layout={layout} />
                     <ShapeCircles layout={layout} files={files} />
-                    <ShapeLabels layout={layout} percentuali={percentuali} />
+                    <ShapeLabels layout={layout} percentages={percentages} />
                 </>
             )}
         </svg>

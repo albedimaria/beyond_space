@@ -25,7 +25,7 @@ function ShapeVisualizer({ files }) {
         <ShapeCanvas
             layout={layout}
             files={files}
-            percentuali={percentuali}
+            percentages={percentuali}
             onSvgClick={handleClick}
         />
     );

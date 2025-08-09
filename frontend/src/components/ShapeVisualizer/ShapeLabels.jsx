@@ -1,5 +1,5 @@
-function ShapeLabels({ layout, percentuali }) {
-    if (percentuali.length !== layout.points.length) return null;
+function ShapeLabels({ layout, percentages }) {
+    if (percentages.length !== layout.points.length) return null;
 
     return layout.points.map(({ x, y }, i) => (
         <text
@@ -9,7 +9,7 @@ function ShapeLabels({ layout, percentuali }) {
             fontSize="14"
             fill="white"
         >
-            {percentuali[i]}%
+            {percentages[i]}%
         </text>
     ));
 }
