@@ -56,7 +56,7 @@ export default function SendPercentages({ percentages, coords, files = [], backe
     return (
         <div className="send-block">
             <Button onClick={handleSend} disabled={!canSend}>
-                {pending ? "sending…" : "send percentages"}
+                {pending ? "generating…" : "generate mix"}
             </Button>
             {error && <div className="error-text" role="alert">{error}</div>}
         </div>

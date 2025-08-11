@@ -21,7 +21,7 @@ export default function FileUploader({ files, setFiles }) {
                 onClick={() => !isLimitReached && inputRef.current?.click()}
                 disabled={isLimitReached}
             >
-                {isLimitReached ? "maximum files reached" : "upload audio files"}
+                {isLimitReached ? "max files reached" : "upload audios"}
             </Button>
 
             <input
