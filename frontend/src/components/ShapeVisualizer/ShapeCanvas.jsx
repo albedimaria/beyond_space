@@ -26,7 +26,18 @@ function ShapeCanvas({ layout, files, percentages, onSvgClick }) {
                     <ShapeLabels layout={layout} percentages={percentages} />
                 </>
             )}
+
+            <circle
+                cx={250}
+                cy={250}
+                r={2}
+                fill="white"
+                stroke="none"
+            />
+
         </svg>
+
+
     );
 }
 

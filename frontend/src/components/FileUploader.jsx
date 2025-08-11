@@ -1,40 +1,37 @@
+// components/FileUploader.jsx
 import { useRef } from "react";
+import Button from "./ui/Button";
 
-function FileUploader({ files, setFiles }) {
+const MAX_FILES = 4;
+
+export default function FileUploader({ files, setFiles }) {
     const inputRef = useRef(null);
-    const maxFiles = 4;
+    const isLimitReached = files.length >= MAX_FILES;
 
-    const handleFileUpload = (event) => {
-        const newFiles = [...files, ...Array.from(event.target.files)];
-        setFiles(newFiles.slice(0, maxFiles));
+    const handleFileUpload = (e) => {
+        const selected = Array.from(e.target.files || []);
+        const next = [...files, ...selected].slice(0, MAX_FILES);
+        setFiles(next);
+        e.target.value = ""; // allow re-selecting same file
     };
-
-    const triggerFileInput = () => {
-        if (files.length < maxFiles) {
-            inputRef.current.click();
-        }
-    };
-
-    const isLimitReached = files.length >= maxFiles;
 
     return (
-        <div className="uploader">
-            <button
-                className={`upload-btn ${isLimitReached ? "disabled" : ""}`}
-                onClick={triggerFileInput}
+        <>
+            <Button
+                onClick={() => !isLimitReached && inputRef.current?.click()}
+                disabled={isLimitReached}
             >
                 {isLimitReached ? "maximum files reached" : "upload audio files"}
-            </button>
+            </Button>
+
             <input
-                type="file"
-                multiple
-                accept="audio/*"
                 ref={inputRef}
-                style={{ display: "none" }}
+                type="file"
+                accept="audio/*"
+                multiple
+                hidden
                 onChange={handleFileUpload}
             />
-        </div>
+        </>
     );
 }
-
-export default FileUploader;

@@ -51,37 +51,47 @@ h1 {
 
 
 /* ===============================
-   SHAPE VISUALIZER (SVG)
+   CONTROL BAR
 ================================= */
 
-svg {
-  width: 300px;
-  height: 300px;
-  border: 1px solid #444;
-  margin-top: 30px;
-  border-radius: 8px;
-  background-color: #111;
-}
+.control-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
 
-svg circle {
-  transition: transform 0.3s ease;
-}
-
-svg circle:hover {
-  transform: scale(1.1);
-  cursor: pointer;
-}
-
-svg line {
-  transition: stroke 0.3s ease;
-}
-
-svg line:hover {
-  stroke: #6aa0d4;
 }
 
 /* ===============================
-   FILE UPLOADER
+   DROPDOWN
+================================= */
+
+.mode-bar select {
+  background-color: #3f4e85;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+  align-items: center;
+}
+
+
+.mode-bar select:hover {
+  background-color: #4e79a7;
+}
+
+/* make the placeholder look slightly muted */
+.mode-bar select option[disabled] {
+  color: rgba(255,255,255,0.85);
+}
+
+
+/* ===============================
+   BUTTONS
 ================================= */
 
 .upload-btn {
@@ -106,6 +116,8 @@ svg line:hover {
   opacity: 0.7;
 }
 
+
+
 /* ===============================
    SHAPE BOARD
 ================================= */
@@ -118,6 +130,8 @@ svg line:hover {
   background-color: transparent;
   margin: 30px auto;
 }
+
+
 
 
 

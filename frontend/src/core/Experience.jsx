@@ -2,9 +2,16 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import FileUploader from "../components/FileUploader";
 import ShapeVisualizer from "../components/ShapeVisualizer/ShapeVisualizer.jsx";
+import SendPercentages from "../components/SendPercentages.jsx";
+import ControlBar from "../components/ControlBar.jsx";
+
 
 function Experience() {
     const [files, setFiles] = useState([]);
+    const [mode, setMode] = useState("sum"); // "sum" | "inverse" | "gaussian"
+    const [percentages, setPercentages] = useState([]);
+    const [lastClick, setLastClick] = useState(null); // {x, y} in SVG coords
+
 
     return (
         <div style={{ textAlign: "center", marginTop: "40px" }}>
@@ -13,19 +20,30 @@ function Experience() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
             >
-                Beyond Space Uploader
+                beyond space
             </motion.h1>
 
-            <motion.div
-                key={files.length}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5 }}
-            >
-                <ShapeVisualizer files={files} />
+            <motion.div key={files.length} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }}>
+                <ShapeVisualizer
+                    files={files}
+                    mode={mode}
+                    onCompute={({ percentages, coords }) => {
+                        setPercentages(percentages);
+                        setLastClick(coords);
+                    }}
+                />
             </motion.div>
 
-            <FileUploader files={files} setFiles={setFiles} />
+
+            <ControlBar
+                files={files}
+                setFiles={setFiles}
+                percentages={percentages}
+                coords={lastClick}
+                backendUrl="/api/percentages"
+                mode={mode}
+                setMode={setMode}
+            />
 
         </div>
     );
