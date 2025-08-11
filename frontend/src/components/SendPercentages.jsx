@@ -1,6 +1,6 @@
 // components/SendPercentages.jsx
 import { useState } from "react";
-import Button from "./ui/Button";
+import Button from "./Button.jsx";
 
 /**
  * Expects:

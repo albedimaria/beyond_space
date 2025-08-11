@@ -1,6 +1,6 @@
 // components/FileUploader.jsx
 import { useRef } from "react";
-import Button from "./ui/Button";
+import Button from "./Button.jsx";
 
 const MAX_FILES = 4;
 

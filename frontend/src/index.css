@@ -131,7 +131,75 @@ h1 {
   margin: 30px auto;
 }
 
+/* ===============================
+   LEFT MENU
+================================= */
 
+/* container fixed on the left */
+.toolbox {
+  position: fixed;
+  top: 100px;
+  left: 0;
+  z-index: 50;
+  /* create a hover area that includes the handle + panel */
+  display: flex;
+  align-items: stretch;
+}
+
+/* the thin visible handle to “peek” from the edge */
+.toolbox-handle {
+  width: 14px;
+  background: #3f4e85;
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  outline: none;
+}
+.toolbox-handle:focus {
+  box-shadow: 0 0 0 2px #4e79a7;
+}
+
+/* the hidden panel */
+.toolbox-panel {
+  width: 260px;
+  padding: 14px 14px 16px;
+  background: #202641;
+  border-right: 1px solid #2c2c2c;
+  transform: translateX(-260px);
+  transition: transform 0.45s ease;
+  color: #fff;
+  display: grid;
+  gap: 10px;
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+/* reveal on hover OR keyboard focus within */
+.toolbox:hover .toolbox-panel,
+.toolbox:focus-within .toolbox-panel {
+  transform: translateX(0);
+}
+
+.toolbox-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.toolbox label {
+  font-size: 0.95rem;
+  color: #e8e8e8;
+}
+.toolbox output {
+  font-variant-numeric: tabular-nums;
+  color: #cfd6ff;
+}
+
+/* slider styling */
+.toolbox input[type="range"] {
+  width: 100%;
+  accent-color: #3f4e85; /* modern browsers */
+}
 
 
 

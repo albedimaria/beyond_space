@@ -4,6 +4,7 @@ import FileUploader from "../components/FileUploader";
 import ShapeVisualizer from "../components/ShapeVisualizer/ShapeVisualizer.jsx";
 import SendPercentages from "../components/SendPercentages.jsx";
 import ControlBar from "../components/ControlBar.jsx";
+import Toolbox from "../components/Toolbox.jsx";
 
 
 function Experience() {
@@ -12,6 +13,12 @@ function Experience() {
     const [percentages, setPercentages] = useState([]);
     const [lastClick, setLastClick] = useState(null); // {x, y} in SVG coords
 
+    // sliders state (default values)
+    const [params, setParams] = useState({
+        temperature: 1.00,
+        randomness: 0.50,
+        steps: 32,
+    });
 
     return (
         <div style={{ textAlign: "center", marginTop: "40px" }}>
@@ -34,6 +41,7 @@ function Experience() {
                 />
             </motion.div>
 
+            <Toolbox params={params} onChange={setParams} />
 
             <ControlBar
                 files={files}
