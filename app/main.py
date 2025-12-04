@@ -1,81 +1,88 @@
+# app/main.py
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from pathlib import Path
-import uuid
-import shutil
-
-# TODO: import your actual inference utilities
-# from app.processing import get_rave_output, get_model_ratio_and_dim
+import uuid, shutil, torch
+from gen_with_two_inputs import get_rave_output, get_model_ratio_and_dim
 
 app = FastAPI()
-
-# CORS (adjust origins for your dev host/port)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5173", "https://*.codesandbox.io"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=["http://localhost:3000","http://127.0.0.1:3000","http://localhost:5173","http://127.0.0.1:5173"],
+    allow_credentials=True, allow_methods=["*"], allow_headers=["*"],
 )
 
-RESULTS_DIR = Path("results")
-RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+RESULTS_DIR = Path("results"); RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+MODEL_PATH = Path("organ.ts")
+_model = None
 
-# Simple health check
+@app.on_event("startup")
+def _startup():
+    global _model
+    if _model is None:
+        _model = torch.jit.load(str(MODEL_PATH), map_location="cpu")
+        get_model_ratio_and_dim(_model)  # optional: warm-up/info
+
 @app.get("/api/health")
 def health():
     return {"ok": True}
 
 @app.post("/api/generate")
 async def generate_audio(
-    mode: str = Form(...),                 # e.g., "interpolate" | "encode" | "decode"
-    temperature: float = Form(1.0),
-    randomness: float = Form(0.5),
-    steps: int = Form(512),
+    mode: str = Form(...),
+    noise: float = Form(1.0),          # ← exact name
+    n_steps: int = Form(512),          # ← exact name
     input_file1: UploadFile = File(None),
     input_file2: UploadFile = File(None),
 ):
-    # create a working dir per job
     job_id = str(uuid.uuid4())[:8]
     workdir = RESULTS_DIR / job_id
     workdir.mkdir(parents=True, exist_ok=True)
 
-    # save inputs if provided
-    saved_paths = []
+    saved = []
     for i, up in enumerate([input_file1, input_file2], start=1):
         if up is not None:
             dst = workdir / f"input{i}_{up.filename}"
             with dst.open("wb") as f:
                 shutil.copyfileobj(up.file, f)
-            saved_paths.append(str(dst))
+            saved.append(dst)
 
-    # ---- CALL YOUR MODEL PIPELINE HERE ----
-    # downsampling_ratio, latent_dim = get_model_ratio_and_dim(model)
-    # out_path = get_rave_output(
-    #     model=model,
-    #     mode=mode,
-    #     temperature=temperature,
-    #     randomness=randomness,
-    #     steps=steps,
-    #     input_file1=saved_paths[0] if len(saved_paths) >= 1 else None,
-    #     input_file2=saved_paths[1] if len(saved_paths) >= 2 else None,
-    #     output_folder=str(workdir),
-    # )
+    in1 = str(saved[0]) if len(saved) >= 1 else None
+    in2 = str(saved[1]) if len(saved) >= 2 else None
 
-    # TEMP: produce a dummy wav so frontend flow works immediately
-    out_path = workdir / "output.wav"
-    with out_path.open("wb") as f:
-        f.write(b"RIFF\0\0\0\0WAVEfmt ")  # minimal header stub for testing flow
+    try:
+        out_path = get_rave_output(
+            model=_model,
+            mode=mode,
+            noise=noise,          # ← pass-through
+            n_steps=n_steps,      # ← pass-through
+            input_file1=in1,
+            input_file2=in2,
+            # no output_folder here
+        )
+    except Exception as e:
+        return JSONResponse({"error": f"{e}"}, status_code=500)
 
-    return JSONResponse({
-        "job_id": job_id,
-        "file": f"/api/download/{job_id}/output.wav"
-    })
+    # normalize to job folder
+    out_path = Path(out_path) if out_path else None
+    if not out_path or not out_path.exists():
+        # fallback: pick any wav created in workdir
+        wavs = list(workdir.glob("*.wav"))
+        if not wavs:
+            return JSONResponse({"error": "No output produced"}, status_code=500)
+        out_path = wavs[0]
+    elif out_path.parent != workdir:
+        target = workdir / out_path.name
+        try: shutil.move(str(out_path), str(target))
+        except Exception: shutil.copy2(str(out_path), str(target))
+        out_path = target
+
+    return {"job_id": job_id, "file": f"/api/download/{job_id}/{out_path.name}"}
 
 @app.get("/api/download/{job_id}/{filename}")
 def download(job_id: str, filename: str):
-    path = RESULTS_DIR / job_id / filename
-    if not path.exists():
+    p = RESULTS_DIR / job_id / filename
+    if not p.exists():
         return JSONResponse({"error": "file not found"}, status_code=404)
-    return FileResponse(path)
+    return FileResponse(p, media_type="audio/wav", filename=filename)
