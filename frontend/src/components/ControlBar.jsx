@@ -8,6 +8,7 @@ export default function ControlBar({
                                        percentages, coords,
                                        backendUrl,
                                        mode, setMode,
+                                       temperature, steps
                                    }) {
     return (
         <div className="control-bar">
@@ -30,12 +31,14 @@ export default function ControlBar({
                     style={{ display: "none" }}
                 />
                 <SendPercentages
-                    files={files}
                     percentages={percentages}
                     coords={coords}
-                    backendUrl={backendUrl}
-                    // If your SendPercentages renders its own <button>, ensure it uses className="upload-btn"
-                    // or expose a prop like `buttonClassName="upload-btn"`
+                    files={files}
+                    backendUrl={backendUrl}       // e.g. "http://127.0.0.1:8000"
+                    mode={mode}
+                    noise={temperature}           // UI → backend name
+                    n_steps={steps}               // UI → backend name
+                    label="generate mix"
                 />
             </div>
         </div>

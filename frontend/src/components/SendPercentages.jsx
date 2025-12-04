@@ -1,64 +1,40 @@
 // components/SendPercentages.jsx
-import { useState } from "react";
+import { generateAudio } from "../api"; // keep if you use api.js
 import Button from "./Button.jsx";
 
-/**
- * Expects:
- * - percentages: number[] (sum=100), aligned with files order
- * - coords: { x: number, y: number } click position in SVG space
- * - files: File[] (optional: to send names)
- * - backendUrl: string
- */
-export default function SendPercentages({ percentages, coords, files = [], backendUrl }) {
-    const [pending, setPending] = useState(false);
-    const [error, setError] = useState("");
-
-    const canSend =
-        Array.isArray(percentages) &&
-        percentages.length > 0 &&
-        percentages.every(n => Number.isFinite(n)) &&
-        coords &&
-        Number.isFinite(coords.x) &&
-        Number.isFinite(coords.y) &&
-        !pending;
-
+export default function SendPercentages({
+                                            percentages,
+                                            coords,
+                                            files = [],
+                                            mode,
+                                            temperature,
+                                            steps,
+                                            label = "generate mix",
+                                        }) {
     const handleSend = async () => {
-        if (!canSend) return;
-        setPending(true);
-        setError("");
+        console.log("[SendPercentages] click");
+        console.log("Tracks:", files.length, "Percentages:", percentages);
 
         try {
-            const payload = {
+            await generateAudio({
+                mode,
+                temperature,
+                steps,
+                file1: files[0] || null,
+                file2: files[1] || null,
                 percentages,
                 click: coords,
-                files: files.map(f => ({ name: f.name, size: f.size, type: f.type })),
-                timestamp: new Date().toISOString(),
-            };
-
-            const res = await fetch(backendUrl, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
             });
-
-            if (!res.ok) {
-                const txt = await res.text().catch(() => "");
-                throw new Error(txt || `HTTP ${res.status}`);
-            }
-            // Optionally: toast/signal success
+            // nothing else — keep it minimal
         } catch (e) {
-            setError(e.message || "Failed to send data");
-        } finally {
-            setPending(false);
+            // keep silent for now to avoid noise
+            // console.log("request failed:", e);
         }
     };
 
     return (
         <div className="send-block">
-            <Button onClick={handleSend} disabled={!canSend}>
-                {pending ? "generating…" : "generate mix"}
-            </Button>
-            {error && <div className="error-text" role="alert">{error}</div>}
+            <Button onClick={handleSend}>{label}</Button>
         </div>
     );
 }

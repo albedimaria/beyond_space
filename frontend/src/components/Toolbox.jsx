@@ -29,21 +29,9 @@ export default function Toolbox({ params, onChange }) {
                 <input
                     id="temperature"
                     type="range"
-                    min="0.10" max="3.00" step="0.01"
+                    min="0.10" max="1.00" step="0.01"
                     value={local.temperature}
                     onChange={(e) => update("temperature", parseFloat(e.target.value))}
-                />
-
-                <div className="toolbox-row">
-                    <label htmlFor="randomness">randomness</label>
-                    <output>{local.randomness.toFixed(2)}</output>
-                </div>
-                <input
-                    id="randomness"
-                    type="range"
-                    min="0.00" max="1.00" step="0.01"
-                    value={local.randomness}
-                    onChange={(e) => update("randomness", parseFloat(e.target.value))}
                 />
 
                 <div className="toolbox-row">
@@ -53,7 +41,7 @@ export default function Toolbox({ params, onChange }) {
                 <input
                     id="steps"
                     type="range"
-                    min="4" max="128" step="1"
+                    min="1" max="12" step="1"
                     value={local.steps}
                     onChange={(e) => update("steps", parseInt(e.target.value, 10))}
                 />

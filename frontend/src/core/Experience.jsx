@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import FileUploader from "../components/FileUploader";
 import ShapeVisualizer from "../components/ShapeVisualizer/ShapeVisualizer.jsx";
-import SendPercentages from "../components/SendPercentages.jsx";
 import ControlBar from "../components/ControlBar.jsx";
 import Toolbox from "../components/Toolbox.jsx";
 
@@ -16,9 +14,12 @@ function Experience() {
     // sliders state (default values)
     const [params, setParams] = useState({
         temperature: 1.00,
-        randomness: 0.50,
-        steps: 32,
+        steps: 5,
     });
+    // backend base (env or fallback)
+    const backendBase =
+        import.meta?.env?.VITE_API_BASE ||
+        "http://127.0.0.1:8000";
 
     return (
         <div style={{ textAlign: "center", marginTop: "40px" }}>
@@ -48,10 +49,13 @@ function Experience() {
                 setFiles={setFiles}
                 percentages={percentages}
                 coords={lastClick}
-                backendUrl="/api/percentages"
+                backendUrl={backendBase}
                 mode={mode}
                 setMode={setMode}
+                temperature={params.temperature}
+                steps={params.steps}
             />
+
 
         </div>
     );
