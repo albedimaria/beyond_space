@@ -1,23 +1,18 @@
 import ShapeCanvas from "./ShapeCanvas";
 import { layouts } from "./shapeLayouts";
-import { useState } from "react";
-import {calculatePercentages} from "../../utils/calculatePercentages.js";
+import { calculatePercentages } from "../../utils/calculatePercentages.js";
 
-function ShapeVisualizer({ files }) {
+function ShapeVisualizer({ files, mode, percentages, coords, onCompute }) {
     const count = files.length;
     const layout = layouts[count];
 
-    const [refPoint, setRefPoint] = useState(null);
-    const [percentuali, setPercentuali] = useState([]);
-
     const handleClick = (clickPoint) => {
-        const perc = calculatePercentages(clickPoint, layout.points, {mode: "sum"});
-        if (perc) {
-            setRefPoint(clickPoint);
-            setPercentuali(perc);
-        } else {
-            setRefPoint(null);
-            setPercentuali([]);
+        if (!layout) return;
+        const perc = calculatePercentages(clickPoint, layout.points, { mode });
+        if (perc && onCompute) {
+            onCompute({ percentages: perc, coords: clickPoint });
+        } else if (onCompute) {
+            onCompute({ percentages: [], coords: null });
         }
     };
 
@@ -25,12 +20,12 @@ function ShapeVisualizer({ files }) {
         <ShapeCanvas
             layout={layout}
             files={files}
-            percentages={percentuali}
+            percentages={percentages}
             onSvgClick={handleClick}
+            refPoint={coords}
         />
     );
 }
 
 export default ShapeVisualizer;
-
 

@@ -7,19 +7,17 @@ import Toolbox from "../components/Toolbox.jsx";
 
 function Experience() {
     const [files, setFiles] = useState([]);
-    const [mode, setMode] = useState("sum"); // "sum" | "inverse" | "gaussian"
+    // mode defines how distances on the board are mapped into mixing percentages ("sum" | "inverse" | "gaussian")
+    const [mode, setMode] = useState("sum");
+    // single source of truth for board percentages and last click position
     const [percentages, setPercentages] = useState([]);
     const [lastClick, setLastClick] = useState(null); // {x, y} in SVG coords
 
-    // sliders state (default values)
+    // UI sliders: temperature maps to backend "noise", steps maps to backend "n_steps"
     const [params, setParams] = useState({
         temperature: 1.00,
         steps: 5,
     });
-    // backend base (env or fallback)
-    const backendBase =
-        import.meta?.env?.VITE_API_BASE ||
-        "http://127.0.0.1:8000";
 
     return (
         <div style={{ textAlign: "center", marginTop: "40px" }}>
@@ -31,16 +29,46 @@ function Experience() {
                 beyond space
             </motion.h1>
 
-            <motion.div key={files.length} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }}>
+            <motion.div
+                key={files.length}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+            >
                 <ShapeVisualizer
                     files={files}
                     mode={mode}
+                    percentages={percentages}
+                    coords={lastClick}
                     onCompute={({ percentages, coords }) => {
                         setPercentages(percentages);
                         setLastClick(coords);
                     }}
                 />
             </motion.div>
+
+            {(() => {
+                let message = "";
+                if (files.length === 0) {
+                    message = "upload two audio files to start mixing";
+                } else if (!lastClick || !percentages?.length) {
+                    message = "click inside the square to choose how to blend your tracks";
+                } else {
+                    message = "when you are happy with the point, press \"generate mix\"";
+                }
+                return (
+                    <div
+                        style={{
+                            marginTop: "12px",
+                            marginBottom: "4px",
+                            fontSize: "0.9rem",
+                            opacity: 0.85,
+                        }}
+                    >
+                        {message}
+                    </div>
+                );
+            })()}
 
             <Toolbox params={params} onChange={setParams} />
 
@@ -49,14 +77,11 @@ function Experience() {
                 setFiles={setFiles}
                 percentages={percentages}
                 coords={lastClick}
-                backendUrl={backendBase}
                 mode={mode}
                 setMode={setMode}
                 temperature={params.temperature}
                 steps={params.steps}
             />
-
-
         </div>
     );
 }
