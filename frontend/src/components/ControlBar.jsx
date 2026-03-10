@@ -36,8 +36,8 @@ export default function ControlBar({
                     files={files}
                     backendUrl={backendUrl}       // e.g. "http://127.0.0.1:8000"
                     mode={mode}
-                    noise={temperature}           // UI → backend name
-                    n_steps={steps}               // UI → backend name
+                    temperature={temperature}
+                    steps={steps}
                     label="generate mix"
                 />
             </div>

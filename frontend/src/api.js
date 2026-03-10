@@ -1,10 +1,10 @@
 const API_BASE = import.meta?.env?.VITE_API_BASE || "http://127.0.0.1:8000";
 
-export async function generateAudio({ mode, temperature, steps, file1, file2 }) {
+export async function generateAudio({ mode, noise, n_steps, file1, file2 }) {
   const form = new FormData();
   form.append("mode", String(mode));
-  form.append("temperature", String(temperature));
-  form.append("steps", String(steps));
+  form.append("noise", String(noise));
+  form.append("n_steps", String(n_steps));
   if (file1) form.append("input_file1", file1);
   if (file2) form.append("input_file2", file2);
 

@@ -224,7 +224,7 @@ def main():
 
     args = parser.parse_args()
 
-    model = torch.jit.load(args.MODEL)
+    model = torch.jit.load(args.model)
     downsampling_ratio, latent_dim = get_model_ratio_and_dim(model)
 
     # Give the same value to every dim

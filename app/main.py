@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from pathlib import Path
 import uuid, shutil, torch
-from gen_with_two_inputs import get_rave_output, get_model_ratio_and_dim
+from utils.gen_with_two_inputs import get_rave_output, get_model_ratio_and_dim
 
 app = FastAPI()
 app.add_middleware(

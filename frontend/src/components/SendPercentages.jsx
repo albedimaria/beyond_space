@@ -18,8 +18,8 @@ export default function SendPercentages({
         try {
             await generateAudio({
                 mode,
-                temperature,
-                steps,
+                noise: temperature,
+                n_steps: steps,
                 file1: files[0] || null,
                 file2: files[1] || null,
                 percentages,
