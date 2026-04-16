@@ -7,7 +7,6 @@ export default function SendPercentages({
                                             percentages,
                                             coords,
                                             files = [],
-                                            mode,
                                             temperature,
                                             steps,
                                             label = "generate mix",
@@ -30,13 +29,10 @@ export default function SendPercentages({
 
         try {
             const result = await generateAudio({
-                mode,
+                files,
+                weights: percentages,
                 noise: temperature,
                 n_steps: steps,
-                file1: files[0] || null,
-                file2: files[1] || null,
-                percentages,
-                click: coords,
             });
 
             if (result && result.file) {

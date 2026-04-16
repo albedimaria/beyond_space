@@ -91,6 +91,53 @@ def apply_scale_and_bias(latent, scale, bias):
 
 
 
+def generate_barycentric(audio_paths, weights, model, n_steps, noise, rave_mode):
+    """
+    Encode N audio files, compute a barycentric weighted sum of their latent
+    trajectories, and decode back to audio.
+
+    Args:
+        audio_paths: list of file paths (1-4)
+        weights:     list of floats, same length as audio_paths;
+                     normalised to sum to 1.0 if they don't already
+        model:       RAVE TorchScript model
+        n_steps:     latent steps (used for prior mode; ignored for encode mode)
+        noise:       additive noise scale applied to the mixed latent
+        rave_mode:   "encode" or "prior"
+
+    Returns:
+        (audio_np, sample_rate) — decoded audio as a 1-D numpy float32 array
+    """
+    # normalise weights
+    total = sum(weights)
+    if abs(total - 1.0) > 1e-6:
+        weights = [w / total for w in weights]
+
+    if rave_mode == "prior":
+        temperature = noise if noise > 0 else 1.0
+        latent = sample_prior(model, n_steps, temperature)
+        if noise > 0:
+            latent = latent + noise * torch.randn_like(latent)
+        audio = decode(model, latent)
+        return audio.squeeze().numpy(), fs
+
+    # encode every file
+    latents = [encode_input_file(model, p) for p in audio_paths]
+
+    # trim all latent trajectories to the shortest time dimension
+    min_len = min(z.size(-1) for z in latents)
+    latents = [z[:, :, :min_len] for z in latents]
+
+    # barycentric weighted sum
+    latent_mixed = sum(w * z for w, z in zip(weights, latents))
+
+    if noise > 0:
+        latent_mixed = latent_mixed + noise * torch.randn_like(latent_mixed)
+
+    audio = decode(model, latent_mixed)
+    return audio.squeeze().numpy(), fs
+
+
 # dummy function to be replaced
 def generate_latent(latent1, latent2, index):
     """

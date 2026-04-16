@@ -19,7 +19,6 @@ export default function ControlBar({
                     percentages={percentages}
                     coords={coords}
                     files={files}
-                    mode={mode}
                     temperature={temperature}
                     steps={steps}
                     label="generate mix"
