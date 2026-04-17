@@ -10,7 +10,7 @@ from utils.gen_with_two_inputs import generate_barycentric, get_rave_output, get
 
 ALLOWED_ORIGINS = os.environ.get(
     "ALLOWED_ORIGINS",
-    "http://localhost:3000,http://127.0.0.1:3000,http://localhost:5173,http://127.0.0.1:5173"
+    "http://localhost:3000,http://127.0.0.1:3000,http://localhost:5173,http://127.0.0.1:5173,https://*.hf.space,https://*.vercel.app"
 ).split(",")
 
 app = FastAPI()
@@ -24,6 +24,7 @@ RESULTS_DIR = Path(os.environ.get("RESULTS_DIR", "results")); RESULTS_DIR.mkdir(
 MODEL_PATH = Path(os.environ.get("MODEL_PATH", "organ.ts"))
 HF_REPO_ID = os.environ.get("HF_REPO_ID", "")
 HF_FILENAME = os.environ.get("HF_FILENAME", "organ.ts")
+CACHE_DIR = Path(os.environ.get("MODEL_CACHE_DIR", "/data/models"))
 _model = None
 
 @app.on_event("startup")
@@ -31,7 +32,12 @@ def _startup():
     global _model, MODEL_PATH
     if HF_REPO_ID and not MODEL_PATH.exists():
         print(f"Downloading model from HF Hub: {HF_REPO_ID}/{HF_FILENAME}")
-        downloaded = hf_hub_download(repo_id=HF_REPO_ID, filename=HF_FILENAME)
+        CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        downloaded = hf_hub_download(
+            repo_id=HF_REPO_ID,
+            filename=HF_FILENAME,
+            cache_dir=str(CACHE_DIR),
+        )
         MODEL_PATH = Path(downloaded)
     if _model is None:
         _model = torch.jit.load(str(MODEL_PATH), map_location="cpu")
