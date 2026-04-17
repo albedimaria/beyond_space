@@ -2,25 +2,19 @@
 import FileUploader from "./FileUploader";
 import SendPercentages from "./SendPercentages";
 import ModeBar from "./ModeBar";
-import ModelSelector from "./ModelSelector";
 
 export default function ControlBar({
                                        files, setFiles,
                                        percentages, coords,
                                        mode, setMode,
                                        temperature, steps,
-                                       modelName, setModelName, modelList,
+                                       modelName,
                                    }) {
     return (
         <div className="control-bar-outer">
             <div className="control-bar">
                 <FileUploader files={files} setFiles={setFiles} />
                 <ModeBar mode={mode} setMode={setMode} />
-                <ModelSelector
-                    modelName={modelName}
-                    setModelName={setModelName}
-                    modelList={modelList}
-                />
                 <div>
                     <SendPercentages
                         percentages={percentages}

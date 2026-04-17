@@ -54,31 +54,28 @@ h1 {
    CONTROL BAR
 ================================= */
 
+.control-bar-outer {
+  position: relative;
+  display: inline-block;
+}
+
 .control-bar {
   display: flex;
   align-items: center;
   gap: 12px;
   justify-content: center;
-
 }
 
 /* ===============================
    SEND STATUS AREA
 ================================= */
 
-/* always present in the DOM — position: absolute so it doesn't affect
-   .send-block's height and therefore the button's alignment in the flex row */
-.send-block {
-  position: relative;
-}
-
 .send-status {
   position: absolute;
   top: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
   min-height: 48px;
-  width: max-content;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -92,29 +89,22 @@ h1 {
 }
 
 .send-download-link {
-  font-size: 0.9rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
   text-decoration: none;
-  border: 1px solid currentColor;
-  border-radius: 6px;
-  padding: 6px 16px;
-  transition: opacity 0.2s;
+  margin-top: 0;
+  display: inline-block;
 }
-.send-download-link:hover { opacity: 0.75; }
 
 @keyframes send-progress {
-  0%   { transform: translateX(-100%); }
-  100% { transform: translateX(250%); }
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
 }
 .send-progress-bar {
-  width: 80px;
+  width: 100%;
   height: 3px;
   border-radius: 2px;
-  background: currentColor;
-  opacity: 0.7;
-  overflow: hidden;
-  animation: send-progress 1.2s ease-in-out infinite;
+  background: linear-gradient(90deg, #3f4e85 25%, #4e79a7 50%, #3f4e85 75%);
+  background-size: 200% auto;
+  animation: send-progress 1.4s linear infinite;
 }
 
 /* ===============================
@@ -257,6 +247,73 @@ h1 {
 }
 
 
+
+/* ===============================
+   MODEL PANEL (right-side mirror of toolbox)
+================================= */
+
+/* override position to right edge; reverse flex order so handle peeks right */
+.model-panel {
+  left: auto;
+  right: 0;
+  flex-direction: row-reverse;
+}
+
+/* panel slides in from the right */
+.model-panel .toolbox-panel {
+  transform: translateX(260px);
+  border-right: none;
+  border-left: 1px solid #2c2c2c;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+
+.model-panel:hover .toolbox-panel,
+.model-panel:focus-within .toolbox-panel {
+  transform: translateX(0);
+}
+
+/* handle inherits toolbox-handle; only the radius flips */
+.model-panel .toolbox-handle {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+
+/* current selection display (mirrors .toolbox output) */
+.toolbox-output {
+  font-variant-numeric: tabular-nums;
+  color: #cfd6ff;
+  font-size: 0.9rem;
+}
+
+/* model list */
+.toolbox-model-list {
+  list-style: none;
+  display: grid;
+  gap: 4px;
+}
+
+.toolbox-model-list li {
+  font-size: 0.9rem;
+  color: #e8e8e8;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: background-color 0.15s ease;
+}
+
+.toolbox-model-list li:hover {
+  background-color: #2e3a60;
+}
+
+.toolbox-model-list li.active {
+  color: #cfd6ff;
+  background-color: #3f4e85;
+}
 
 /* ===============================
    FUTURE ANIMATIONS

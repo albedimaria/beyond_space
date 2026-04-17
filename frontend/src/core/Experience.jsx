@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import ShapeVisualizer from "../components/ShapeVisualizer/ShapeVisualizer.jsx";
 import ControlBar from "../components/ControlBar.jsx";
 import Toolbox from "../components/Toolbox.jsx";
+import ModelPanel from "../components/ModelPanel.jsx";
 import { fetchModels } from "../api.js";
 
 
@@ -83,6 +84,11 @@ function Experience() {
             })()}
 
             <Toolbox params={params} onChange={setParams} />
+            <ModelPanel
+                modelName={modelName}
+                setModelName={setModelName}
+                modelList={modelList}
+            />
 
             <ControlBar
                 files={files}
@@ -94,8 +100,6 @@ function Experience() {
                 temperature={params.temperature}
                 steps={params.steps}
                 modelName={modelName}
-                setModelName={setModelName}
-                modelList={modelList}
             />
         </div>
     );
