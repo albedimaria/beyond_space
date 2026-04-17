@@ -32,9 +32,23 @@ html, body {
   overflow: hidden;
 }
 
-h1 {
-  font-size: 2rem;
-  margin-bottom: 20px;
+/* ===============================
+   WATERMARK TITLE
+================================= */
+
+.watermark {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  font-size: clamp(4rem, 15vw, 12rem);
+  font-weight: 700;
+  letter-spacing: 0.4em;
+  color: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
 }
 
 /* ===============================
@@ -120,8 +134,7 @@ h1 {
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  margin-top: 20px;
-  align-items: center;
+  margin-top: 10px;
 }
 
 
@@ -148,7 +161,7 @@ h1 {
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .upload-btn:hover {
@@ -173,7 +186,7 @@ h1 {
   border: 2px solid #ccc;
   border-radius: 8px;
   background-color: transparent;
-  margin: 30px auto;
+  margin: 12px auto;
 }
 
 /* ===============================
@@ -185,7 +198,7 @@ h1 {
   position: fixed;
   top: 100px;
   left: 0;
-  z-index: 50;
+  z-index: 1;
   /* create a hover area that includes the handle + panel */
   display: flex;
   align-items: stretch;

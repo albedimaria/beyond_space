@@ -31,14 +31,8 @@ function Experience() {
     }, []);
 
     return (
-        <div style={{ textAlign: "center", marginTop: "40px" }}>
-            <motion.h1
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-            >
-                beyond space
-            </motion.h1>
+        <div style={{ textAlign: "center", marginTop: "16px", position: "relative", zIndex: 1 }}>
+            <div className="watermark" aria-hidden="true">beyond space</div>
 
             <motion.div
                 key={files.length}
@@ -72,8 +66,8 @@ function Experience() {
                 return (
                     <div
                         style={{
-                            marginTop: "12px",
-                            marginBottom: "4px",
+                            marginTop: "6px",
+                            marginBottom: "2px",
                             fontSize: "0.9rem",
                             opacity: 0.85,
                         }}
