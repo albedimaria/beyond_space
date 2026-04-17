@@ -145,7 +145,16 @@ def generate_barycentric(audio_paths, weights, model, n_steps, noise, rave_mode)
         # [0.01, 0.10] — keeps latent within the model's training distribution
         latent_mixed = latent_mixed + (noise * 0.1) * torch.randn_like(latent_mixed)
 
+    # compute expected output length BEFORE decode so we can trim the buffer padding
+    downsampling_ratio, _ = get_model_ratio_and_dim(model)
+    expected_samples = latent_mixed.size(-1) * downsampling_ratio
+    print(f"[debug] latent steps={latent_mixed.size(-1)}, ratio={downsampling_ratio}, "
+          f"expected_samples={expected_samples}")
+
     audio = decode(model, latent_mixed)
+
+    # RAVE streaming models decode into a fixed-size buffer; trim zero-padding
+    audio = audio[..., :expected_samples]
 
     # guard against NaN/Inf produced by out-of-distribution latents
     nan_count = torch.isnan(audio).sum().item()
