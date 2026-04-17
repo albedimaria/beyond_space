@@ -51,6 +51,8 @@ function Experience() {
                 let message = "";
                 if (files.length === 0) {
                     message = "upload two audio files to start mixing";
+                } else if (files.length === 1) {
+                    message = "upload at least one more file — up to 4 total";
                 } else if (!lastClick || !percentages?.length) {
                     message = "click inside the square to choose how to blend your tracks";
                 } else {

@@ -128,14 +128,31 @@ def generate_barycentric(audio_paths, weights, model, n_steps, noise, rave_mode)
     min_len = min(z.size(-1) for z in latents)
     latents = [z[:, :, :min_len] for z in latents]
 
+    for i, (path, latent) in enumerate(zip(audio_paths, latents)):
+        print(f"[debug] file {i}: path={path}, latent shape={latent.shape}, "
+              f"latent min={latent.min().item():.4f}, max={latent.max().item():.4f}, "
+              f"mean={latent.mean().item():.4f}")
+
     # barycentric weighted sum
     latent_mixed = sum(w * z for w, z in zip(weights, latents))
+
+    print(f"[debug] latent_mixed shape={latent_mixed.shape}, "
+          f"min={latent_mixed.min().item():.4f}, max={latent_mixed.max().item():.4f}, "
+          f"mean={latent_mixed.mean().item():.4f}")
 
     if noise > 0:
         latent_mixed = latent_mixed + noise * torch.randn_like(latent_mixed)
 
     audio = decode(model, latent_mixed)
-    return audio.squeeze().numpy(), fs
+    print(f"[debug] audio shape={audio.shape}, "
+          f"min={audio.min().item():.4f}, max={audio.max().item():.4f}, "
+          f"mean={audio.mean().item():.4f}")
+
+    audio_np = audio.squeeze().numpy()
+    print(f"[debug] audio_np shape={audio_np.shape}, "
+          f"min={audio_np.min():.4f}, max={audio_np.max():.4f}, "
+          f"mean={audio_np.mean():.4f}")
+    return audio_np, fs
 
 
 # dummy function to be replaced
