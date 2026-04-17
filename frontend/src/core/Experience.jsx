@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import ShapeVisualizer from "../components/ShapeVisualizer/ShapeVisualizer.jsx";
 import ControlBar from "../components/ControlBar.jsx";
 import Toolbox from "../components/Toolbox.jsx";
+import { fetchModels } from "../api.js";
 
 
 function Experience() {
@@ -18,6 +19,15 @@ function Experience() {
         temperature: 1.00,
         steps: 5,
     });
+
+    const [modelName, setModelName] = useState("organ_archive_b2048_r48000_z16");
+    const [modelList, setModelList] = useState([]);
+
+    useEffect(() => {
+        fetchModels()
+            .then(setModelList)
+            .catch(() => {}); // silent — ModelSelector falls back to default
+    }, []);
 
     return (
         <div style={{ textAlign: "center", marginTop: "40px" }}>
@@ -83,6 +93,9 @@ function Experience() {
                 setMode={setMode}
                 temperature={params.temperature}
                 steps={params.steps}
+                modelName={modelName}
+                setModelName={setModelName}
+                modelList={modelList}
             />
         </div>
     );

@@ -26,50 +26,69 @@ MODEL_PATH = Path(os.environ.get("MODEL_PATH", "organ.ts"))
 HF_REPO_ID = os.environ.get("HF_REPO_ID", "")
 HF_FILENAME = os.environ.get("HF_FILENAME", "organ.ts")
 CACHE_DIR = Path(os.environ.get("MODEL_CACHE_DIR", "/data/models"))
-_model = None
+
+AVAILABLE_MODELS = [
+    "organ_archive_b2048_r48000_z16",
+    "organ_bach_b2048_sr48000_z16",
+    "guitar_iil_b2048_r48000_z16",
+    "voice_vocalset_b2048_r48000_z16",
+    "voice_hifitts_b2048_r48000_z16",
+    "birds_motherbird_b2048_r48000_z16",
+    "birds_pluma_b2048_r48000_z16",
+    "water_pondbrain_b2048_r48000_z16",
+]
+
+_model_cache = {}
+
+def _get_model(model_name: str):
+    """Return a cached TorchScript model, downloading and loading it on first use."""
+    global _model_cache
+    if model_name in _model_cache:
+        return _model_cache[model_name]
+
+    filename = f"{model_name}.ts"
+    local_path = MODEL_PATH.parent / filename
+
+    if not local_path.exists():
+        if not HF_REPO_ID:
+            raise RuntimeError(
+                f"Model '{filename}' not found locally and HF_REPO_ID is not set."
+            )
+        print(f"Downloading model from HF Hub: {HF_REPO_ID}/{filename}")
+        CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        local_path = Path(hf_hub_download(
+            repo_id=HF_REPO_ID,
+            filename=filename,
+            cache_dir=str(CACHE_DIR),
+        ))
+
+    print(f"Loading model: {model_name}")
+    model = torch.jit.load(str(local_path), map_location="cpu")
+    _model_cache[model_name] = model
+    print(f"Model loaded: {model_name}")
+    return model
+
 
 @app.on_event("startup")
 def _startup():
-    global _model, MODEL_PATH
+    # Pre-load the default model so the first request is fast
+    default_name = Path(HF_FILENAME).stem  # strip .ts
+    if default_name not in AVAILABLE_MODELS:
+        default_name = AVAILABLE_MODELS[0]
 
-    # step a: check local path
-    print(f"MODEL_PATH resolved to: {MODEL_PATH}")
-    print(f"Model file exists: {MODEL_PATH.exists()}")
-
-    # step b: download from HF Hub if needed
-    if not MODEL_PATH.exists():
-        if not HF_REPO_ID:
-            raise RuntimeError(
-                f"Model file not found at '{MODEL_PATH}' and HF_REPO_ID is not set. "
-                "Provide a local model or set HF_REPO_ID."
-            )
-        print(f"Downloading model from HF Hub: {HF_REPO_ID}/{HF_FILENAME}")
-        CACHE_DIR.mkdir(parents=True, exist_ok=True)
-        downloaded = hf_hub_download(
-            repo_id=HF_REPO_ID,
-            filename=HF_FILENAME,
-            cache_dir=str(CACHE_DIR),
-        )
-        MODEL_PATH = Path(downloaded)
-        print(f"MODEL_PATH resolved to: {MODEL_PATH}")
-        print(f"Model file exists: {MODEL_PATH.exists()}")
-
-    # step c: guard before load
-    if not MODEL_PATH.exists():
-        raise RuntimeError(
-            f"Model file still not found at '{MODEL_PATH}' after download attempt."
-        )
-
-    # step d: load
-    print("Loading model...")
-    if _model is None:
-        _model = torch.jit.load(str(MODEL_PATH), map_location="cpu")
-        get_model_ratio_and_dim(_model)  # optional: warm-up/info
-    print("Model loaded successfully.")
+    print(f"Pre-loading default model: {default_name}")
+    try:
+        _get_model(default_name)
+    except Exception as e:
+        raise RuntimeError(f"Failed to load default model '{default_name}': {e}")
 
 @app.get("/api/health")
 def health():
     return {"ok": True}
+
+@app.get("/api/models")
+def list_models():
+    return {"models": AVAILABLE_MODELS}
 
 @app.post("/api/generate")
 async def generate_audio(
@@ -77,6 +96,7 @@ async def generate_audio(
     noise: float = Form(1.0),
     n_steps: int = Form(512),
     weights: str = Form(""),
+    model_name: str = Form("organ_archive_b2048_r48000_z16"),
     input_file1: UploadFile = File(None),
     input_file2: UploadFile = File(None),
     input_file3: UploadFile = File(None),
@@ -98,6 +118,9 @@ async def generate_audio(
     if not audio_paths:
         return JSONResponse({"error": "No input files provided"}, status_code=400)
 
+    if model_name not in AVAILABLE_MODELS:
+        return JSONResponse({"error": f"Unknown model '{model_name}'"}, status_code=400)
+
     # parse weights; fall back to equal weights if missing or mismatched
     parsed_weights = None
     if weights:
@@ -109,10 +132,11 @@ async def generate_audio(
         parsed_weights = [1.0 / len(audio_paths)] * len(audio_paths)
 
     try:
+        model = _get_model(model_name)
         audio_np, sample_rate = generate_barycentric(
             audio_paths=audio_paths,
             weights=parsed_weights,
-            model=_model,
+            model=model,
             n_steps=n_steps,
             noise=noise,
             rave_mode=rave_mode,

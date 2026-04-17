@@ -9,6 +9,7 @@ export default function SendPercentages({
                                             files = [],
                                             temperature,
                                             steps,
+                                            modelName = "organ_archive_b2048_r48000_z16",
                                             label = "generate mix",
                                         }) {
     const [isLoading, setIsLoading] = useState(false);
@@ -33,6 +34,7 @@ export default function SendPercentages({
                 weights: percentages,
                 noise: temperature,
                 n_steps: steps,
+                model_name: modelName,
             });
 
             if (result && result.file) {
@@ -49,16 +51,13 @@ export default function SendPercentages({
     const isDisabled = !hasFiles || isLoading;
 
     return (
-        <div className="send-block">
+        <>
             <Button onClick={handleSend} disabled={isDisabled}>
                 {label}
             </Button>
             <div className="send-status">
                 {isLoading && (
-                    <>
-                        <div className="send-progress-bar" />
-                        <span className="send-status-label">generating...</span>
-                    </>
+                    <div className="send-progress-bar" />
                 )}
                 {!isLoading && error && (
                     <span className="send-status-label" style={{ color: "#ffb3b3" }}>
@@ -66,11 +65,11 @@ export default function SendPercentages({
                     </span>
                 )}
                 {!isLoading && !error && downloadUrl && (
-                    <a className="send-download-link" href={downloadUrl} download>
-                        ↓ download mix
+                    <a className="upload-btn send-download-link" href={downloadUrl} download>
+                        download mix
                     </a>
                 )}
             </div>
-        </div>
+        </>
     );
 }
