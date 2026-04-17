@@ -5,6 +5,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from pathlib import Path
 from huggingface_hub import hf_hub_download
 import os, uuid, shutil, json, torch
+import numpy as np
 import soundfile as sf
 from utils.gen_with_two_inputs import generate_barycentric, get_rave_output, get_model_ratio_and_dim
 
@@ -120,7 +121,10 @@ async def generate_audio(
         return JSONResponse({"error": f"{e}"}, status_code=500)
 
     out_path = workdir / "output.wav"
-    sf.write(str(out_path), audio_np, sample_rate)
+    # write as 16-bit PCM — universally playable (float WAV is not supported by
+    # most browsers and many common players)
+    audio_np = np.clip(audio_np.astype(np.float32), -1.0, 1.0)
+    sf.write(str(out_path), audio_np, sample_rate, subtype="PCM_16")
 
     return {"job_id": job_id, "file": f"/api/download/{job_id}/output.wav"}
 

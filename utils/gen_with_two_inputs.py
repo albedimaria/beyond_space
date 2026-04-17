@@ -141,15 +141,25 @@ def generate_barycentric(audio_paths, weights, model, n_steps, noise, rave_mode)
           f"mean={latent_mixed.mean().item():.4f}")
 
     if noise > 0:
-        latent_mixed = latent_mixed + noise * torch.randn_like(latent_mixed)
+        # scale noise so slider range [0.10, 1.00] maps to effective perturbation
+        # [0.01, 0.10] — keeps latent within the model's training distribution
+        latent_mixed = latent_mixed + (noise * 0.1) * torch.randn_like(latent_mixed)
 
     audio = decode(model, latent_mixed)
+
+    # guard against NaN/Inf produced by out-of-distribution latents
+    nan_count = torch.isnan(audio).sum().item()
+    if nan_count > 0:
+        print(f"[debug] WARNING: {nan_count} NaN values in decoded audio — replacing with 0")
+    audio = torch.nan_to_num(audio.float(), nan=0.0, posinf=1.0, neginf=-1.0)
+
     print(f"[debug] audio shape={audio.shape}, "
           f"min={audio.min().item():.4f}, max={audio.max().item():.4f}, "
           f"mean={audio.mean().item():.4f}")
 
-    audio_np = audio.squeeze().numpy()
-    print(f"[debug] audio_np shape={audio_np.shape}, "
+    audio_np = audio.squeeze().numpy().astype(np.float32)
+    audio_np = np.clip(audio_np, -1.0, 1.0)
+    print(f"[debug] audio_np shape={audio_np.shape}, dtype={audio_np.dtype}, "
           f"min={audio_np.min():.4f}, max={audio_np.max():.4f}, "
           f"mean={audio_np.mean():.4f}")
     return audio_np, fs
