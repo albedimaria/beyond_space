@@ -218,9 +218,8 @@ h1 {
   border-bottom-right-radius: 6px;
 }
 
-/* reveal on hover OR keyboard focus within */
-.toolbox:hover .toolbox-panel,
-.toolbox:focus-within .toolbox-panel {
+/* reveal on hover */
+.toolbox:hover .toolbox-panel {
   transform: translateX(0);
 }
 
@@ -252,11 +251,10 @@ h1 {
    MODEL PANEL (right-side mirror of toolbox)
 ================================= */
 
-/* override position to right edge; reverse flex order so handle peeks right */
+/* override position to right edge */
 .model-panel {
   left: auto;
   right: 0;
-  flex-direction: row-reverse;
 }
 
 /* panel slides in from the right */
@@ -270,8 +268,7 @@ h1 {
   border-bottom-left-radius: 6px;
 }
 
-.model-panel:hover .toolbox-panel,
-.model-panel:focus-within .toolbox-panel {
+.model-panel:hover .toolbox-panel {
   transform: translateX(0);
 }
 
