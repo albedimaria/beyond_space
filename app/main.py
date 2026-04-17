@@ -30,7 +30,18 @@ _model = None
 @app.on_event("startup")
 def _startup():
     global _model, MODEL_PATH
-    if HF_REPO_ID and not MODEL_PATH.exists():
+
+    # step a: check local path
+    print(f"MODEL_PATH resolved to: {MODEL_PATH}")
+    print(f"Model file exists: {MODEL_PATH.exists()}")
+
+    # step b: download from HF Hub if needed
+    if not MODEL_PATH.exists():
+        if not HF_REPO_ID:
+            raise RuntimeError(
+                f"Model file not found at '{MODEL_PATH}' and HF_REPO_ID is not set. "
+                "Provide a local model or set HF_REPO_ID."
+            )
         print(f"Downloading model from HF Hub: {HF_REPO_ID}/{HF_FILENAME}")
         CACHE_DIR.mkdir(parents=True, exist_ok=True)
         downloaded = hf_hub_download(
@@ -39,9 +50,21 @@ def _startup():
             cache_dir=str(CACHE_DIR),
         )
         MODEL_PATH = Path(downloaded)
+        print(f"MODEL_PATH resolved to: {MODEL_PATH}")
+        print(f"Model file exists: {MODEL_PATH.exists()}")
+
+    # step c: guard before load
+    if not MODEL_PATH.exists():
+        raise RuntimeError(
+            f"Model file still not found at '{MODEL_PATH}' after download attempt."
+        )
+
+    # step d: load
+    print("Loading model...")
     if _model is None:
         _model = torch.jit.load(str(MODEL_PATH), map_location="cpu")
         get_model_ratio_and_dim(_model)  # optional: warm-up/info
+    print("Model loaded successfully.")
 
 @app.get("/api/health")
 def health():
