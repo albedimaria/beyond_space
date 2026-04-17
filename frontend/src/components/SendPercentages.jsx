@@ -15,7 +15,7 @@ export default function SendPercentages({
     const [error, setError] = useState(null);
     const [downloadUrl, setDownloadUrl] = useState(null);
 
-    const hasFiles = files.length > 0;
+    const hasFiles = files.length >= 2;
 
     const handleSend = async () => {
         if (!hasFiles || isLoading) return;
@@ -51,20 +51,26 @@ export default function SendPercentages({
     return (
         <div className="send-block">
             <Button onClick={handleSend} disabled={isDisabled}>
-                {isLoading ? "Generating..." : label}
+                {label}
             </Button>
-            {error && (
-                <div style={{ fontSize: "0.85rem", marginTop: "6px", color: "#ffb3b3" }}>
-                    {error}
-                </div>
-            )}
-            {downloadUrl && (
-                <div style={{ fontSize: "0.85rem", marginTop: "8px" }}>
-                    <a href={downloadUrl} download>
-                        Download mix
+            <div className="send-status">
+                {isLoading && (
+                    <>
+                        <div className="send-progress-bar" />
+                        <span className="send-status-label">generating...</span>
+                    </>
+                )}
+                {!isLoading && error && (
+                    <span className="send-status-label" style={{ color: "#ffb3b3" }}>
+                        {error}
+                    </span>
+                )}
+                {!isLoading && !error && downloadUrl && (
+                    <a className="send-download-link" href={downloadUrl} download>
+                        ↓ download mix
                     </a>
-                </div>
-            )}
+                )}
+            </div>
         </div>
     );
 }
