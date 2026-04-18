@@ -200,9 +200,9 @@ html, body {
 .shape-board {
   width: 500px;
   height: 500px;
-  border: 1px solid #2d2756;
+  border: 1px solid rgba(255, 255, 255, 0.35);
   border-radius: 2px;
-  background-color: #0d0d1a;
+  background-color: transparent;
   margin: 12px auto;
   display: block;
 }
