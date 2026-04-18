@@ -19,13 +19,6 @@ function ShapeCanvas({ layout, files, percentages, onSvgClick, refPoint }) {
             onClick={handleSvgClick}
             style={{ cursor: "crosshair" }}
         >
-            <defs>
-                <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1a1035" strokeWidth="1" />
-                </pattern>
-            </defs>
-            <rect width="500" height="500" fill="url(#grid)" />
-
             {layout && (
                 <>
                     <ShapeLines layout={layout} />
@@ -34,37 +27,24 @@ function ShapeCanvas({ layout, files, percentages, onSvgClick, refPoint }) {
                 </>
             )}
 
-            {/* subtle origin dot */}
-            <circle cx={250} cy={250} r={1.5} fill="#2d2756" stroke="none" />
+            {/* small center dot as a subtle origin */}
+            <circle
+                cx={250}
+                cy={250}
+                r={2}
+                fill="white"
+                stroke="none"
+            />
 
             {refPoint && (
-                <>
-                    <circle
-                        cx={refPoint.x}
-                        cy={refPoint.y}
-                        r={10}
-                        fill="none"
-                        stroke="#7c3aed"
-                        strokeWidth="1"
-                        opacity="0.35"
-                        className="refpoint-pulse"
-                    />
-                    <circle
-                        cx={refPoint.x}
-                        cy={refPoint.y}
-                        r={4}
-                        fill="none"
-                        stroke="#7c3aed"
-                        strokeWidth="1"
-                    />
-                    <circle
-                        cx={refPoint.x}
-                        cy={refPoint.y}
-                        r={1.5}
-                        fill="#7c3aed"
-                        stroke="none"
-                    />
-                </>
+                <circle
+                    cx={refPoint.x}
+                    cy={refPoint.y}
+                    r={5}
+                    fill="none"
+                    stroke="#ffffff"
+                    strokeWidth="1.5"
+                />
             )}
         </svg>
     );

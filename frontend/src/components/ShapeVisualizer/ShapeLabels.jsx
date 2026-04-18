@@ -5,10 +5,9 @@ function ShapeLabels({ layout, percentages }) {
         <text
             key={`label-${i}`}
             x={x - 10}
-            y={y + 26}
-            fontSize="11"
-            fill="#94a3b8"
-            fontFamily="Inter, system-ui, sans-serif"
+            y={y + 38}
+            fontSize="14"
+            fill="white"
         >
             {percentages[i]}%
         </text>

@@ -230,7 +230,7 @@ html, body {
 }
 
 .toolbox-handle {
-  width: 2px;
+  width: 8px;
   background: #2d2756;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;

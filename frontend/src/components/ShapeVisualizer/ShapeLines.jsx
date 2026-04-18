@@ -11,9 +11,8 @@ function ShapeLines({ layout }) {
                 y1={y1}
                 x2={x2}
                 y2={y2}
-                stroke="#2d2756"
-                strokeWidth="1"
-                strokeDasharray="4 2"
+                stroke="#4e79a7"
+                strokeWidth="2"
                 initial={{ pathLength: 0 }}
                 animate={{ pathLength: 1 }}
                 transition={{ duration: 0.6, delay: i * 0.1 }}
