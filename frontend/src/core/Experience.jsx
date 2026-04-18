@@ -32,7 +32,7 @@ function Experience() {
 
     return (
         <div style={{ textAlign: "center", marginTop: "16px", position: "relative", zIndex: 1 }}>
-            <div className="watermark" aria-hidden="true">beyond space</div>
+            <div className="watermark" aria-hidden="true">beyond<br />space</div>
 
             <motion.div
                 key={files.length}
