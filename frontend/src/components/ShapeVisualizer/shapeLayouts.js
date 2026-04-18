@@ -1,7 +1,7 @@
 
 export const circleProps = {
     r: 20,
-    fill: "#4e79a7",
+    fill: "#7c3aed",
 };
 
 export const layouts = {

@@ -231,14 +231,14 @@ html, body {
 
 .toolbox-handle {
   width: 8px;
-  background: #2d2756;
+  background: #7c3aed;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
   outline: none;
   transition: background 0.15s ease;
 }
 .toolbox:hover .toolbox-handle {
-  background: #7c3aed;
+  background: #8b5cf6;
 }
 .toolbox-handle:focus {
   background: #7c3aed;
