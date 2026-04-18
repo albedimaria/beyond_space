@@ -46,7 +46,7 @@ html, body {
   line-height: 1.1;
   letter-spacing: 0.3em;
   text-align: center;
-  color: rgba(124, 58, 237, 0.04);
+  color: rgba(167, 139, 250, 0.09);
   pointer-events: none;
   user-select: none;
 }
@@ -231,7 +231,7 @@ html, body {
 
 .toolbox-handle {
   width: 8px;
-  background: #7c3aed;
+  background: #a78bfa;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
   outline: none;
