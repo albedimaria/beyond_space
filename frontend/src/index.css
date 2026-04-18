@@ -1,12 +1,10 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Inter, system-ui, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: transparent;
-
+  color-scheme: dark;
+  color: #e2e8f0;
+  background-color: #06060f;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -25,9 +23,9 @@
 
 html, body {
   height: 100%;
-  font-family: 'Inter', sans-serif;
-  background-color: #0d0d0d;
-  color: #f0f0f0;
+  font-family: Inter, system-ui, sans-serif;
+  background-color: #06060f;
+  color: #e2e8f0;
   line-height: 1.6;
   overflow: hidden;
 }
@@ -42,12 +40,13 @@ html, body {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 0;
+  font-family: Georgia, serif;
   font-size: clamp(3rem, 18vw, 11rem);
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: 0.3em;
   text-align: center;
-  color: rgba(255, 255, 255, 0.05);
+  color: rgba(124, 58, 237, 0.04);
   pointer-events: none;
   user-select: none;
 }
@@ -63,7 +62,6 @@ html, body {
   margin: 0 auto;
   padding-top: 40px;
 }
-
 
 /* ===============================
    CONTROL BAR
@@ -99,8 +97,10 @@ html, body {
 }
 
 .send-status-label {
-  font-size: 0.85rem;
-  opacity: 0.85;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #94a3b8;
 }
 
 .send-download-link {
@@ -115,9 +115,8 @@ html, body {
 }
 .send-progress-bar {
   width: 100%;
-  height: 3px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, #3f4e85 25%, #4e79a7 50%, #3f4e85 75%);
+  height: 1px;
+  background: linear-gradient(90deg, #4f46e5, #7c3aed, #4f46e5);
   background-size: 200% auto;
   animation: send-progress 1.4s linear infinite;
 }
@@ -127,55 +126,72 @@ html, body {
 ================================= */
 
 .mode-bar select {
-  background-color: #3f4e85;
-  border: none;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-size: 1rem;
+  background-color: transparent;
+  border: 1px solid #2d2756;
+  color: #94a3b8;
+  padding: 6px 14px;
+  border-radius: 2px;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.15s ease;
   margin-top: 10px;
+  appearance: none;
+  -webkit-appearance: none;
 }
-
 
 .mode-bar select:hover {
-  background-color: #4e79a7;
+  border-color: #7c3aed;
+  color: #e2e8f0;
+  background-color: rgba(139, 92, 246, 0.18);
 }
 
-/* make the placeholder look slightly muted */
+.mode-bar select option {
+  background-color: #0d0d1a;
+  color: #e2e8f0;
+  font-size: 0.85rem;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
 .mode-bar select option[disabled] {
-  color: rgba(255,255,255,0.85);
+  color: #94a3b8;
 }
-
 
 /* ===============================
    BUTTONS
 ================================= */
 
 .upload-btn {
-  background-color: #3f4e85;
-  border: none;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-size: 1rem;
+  background-color: transparent;
+  border: 1px solid #2d2756;
+  color: #94a3b8;
+  padding: 6px 14px;
+  border-radius: 2px;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.15s ease;
   margin-top: 10px;
 }
 
 .upload-btn:hover {
-  background-color: #4e79a7;
+  border-color: #7c3aed;
+  color: #e2e8f0;
+  background-color: rgba(139, 92, 246, 0.18);
 }
 
 .upload-btn.disabled {
-  background-color: #5c5c5c;
+  border-color: #2d2756;
+  color: #94a3b8;
+  opacity: 0.4;
   cursor: not-allowed;
-  opacity: 0.7;
+  background-color: transparent;
 }
-
-
 
 /* ===============================
    SHAPE BOARD
@@ -184,55 +200,63 @@ html, body {
 .shape-board {
   width: 500px;
   height: 500px;
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  background-color: transparent;
+  border: 1px solid #2d2756;
+  border-radius: 2px;
+  background-color: #0d0d1a;
   margin: 12px auto;
+  display: block;
+}
+
+/* refpoint outer ring pulse */
+@keyframes refpoint-pulse {
+  0%, 100% { opacity: 0.35; }
+  50%       { opacity: 0.08; }
+}
+.refpoint-pulse {
+  animation: refpoint-pulse 2s ease-in-out infinite;
 }
 
 /* ===============================
-   LEFT MENU
+   LEFT MENU (TOOLBOX)
 ================================= */
 
-/* container fixed on the left */
 .toolbox {
   position: fixed;
   top: 100px;
   left: 0;
   z-index: 1;
-  /* create a hover area that includes the handle + panel */
   display: flex;
   align-items: stretch;
 }
 
-/* the thin visible handle to “peek” from the edge */
 .toolbox-handle {
-  width: 14px;
-  background: #3f4e85;
-  border-top-right-radius: 6px;
-  border-bottom-right-radius: 6px;
+  width: 2px;
+  background: #2d2756;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
   outline: none;
+  transition: background 0.15s ease;
+}
+.toolbox:hover .toolbox-handle {
+  background: #7c3aed;
 }
 .toolbox-handle:focus {
-  box-shadow: 0 0 0 2px #4e79a7;
+  background: #7c3aed;
 }
 
-/* the hidden panel */
 .toolbox-panel {
-  width: 260px;
+  width: 220px;
   padding: 14px 14px 16px;
-  background: #202641;
-  border-right: 1px solid #2c2c2c;
-  transform: translateX(-260px);
-  transition: transform 0.45s ease;
-  color: #fff;
+  background: #0d0d1a;
+  border-right: 1px solid #2d2756;
+  transform: translateX(-220px);
+  transition: transform 0.15s ease;
+  color: #e2e8f0;
   display: grid;
   gap: 10px;
-  border-top-right-radius: 6px;
-  border-bottom-right-radius: 6px;
+  border-radius: 0;
 }
 
-/* reveal on hover */
 .toolbox:hover .toolbox-panel {
   transform: translateX(0);
 }
@@ -245,92 +269,88 @@ html, body {
 }
 
 .toolbox label {
-  font-size: 0.95rem;
-  color: #e8e8e8;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
 }
 .toolbox output {
   font-variant-numeric: tabular-nums;
-  color: #cfd6ff;
+  font-size: 0.65rem;
+  color: #7c3aed;
 }
 
-/* slider styling */
+/* slider */
 .toolbox input[type="range"] {
   width: 100%;
-  accent-color: #3f4e85; /* modern browsers */
+  height: 1px;
+  accent-color: #7c3aed;
+  appearance: auto;
+  cursor: pointer;
 }
 
-
-
 /* ===============================
-   MODEL PANEL (right-side mirror of toolbox)
+   MODEL PANEL (right-side mirror)
 ================================= */
 
-/* override position to right edge */
 .model-panel {
   left: auto;
   right: 0;
 }
 
-/* panel slides in from the right */
 .model-panel .toolbox-panel {
-  transform: translateX(260px);
+  transform: translateX(220px);
   border-right: none;
-  border-left: 1px solid #2c2c2c;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  border-top-left-radius: 6px;
-  border-bottom-left-radius: 6px;
+  border-left: 1px solid #2d2756;
+  border-radius: 0;
 }
 
 .model-panel:hover .toolbox-panel {
   transform: translateX(0);
 }
 
-/* handle inherits toolbox-handle; only the radius flips */
 .model-panel .toolbox-handle {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  border-top-left-radius: 6px;
-  border-bottom-left-radius: 6px;
+  border-radius: 0;
 }
 
-/* current selection display (mirrors .toolbox output) */
 .toolbox-output {
   font-variant-numeric: tabular-nums;
-  color: #cfd6ff;
-  font-size: 0.9rem;
+  font-size: 0.65rem;
+  color: #7c3aed;
 }
 
-/* model list */
 .toolbox-model-list {
   list-style: none;
   display: grid;
-  gap: 4px;
+  gap: 2px;
 }
 
 .toolbox-model-list li {
-  font-size: 0.9rem;
-  color: #e8e8e8;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
   cursor: pointer;
   padding: 4px 6px;
-  border-radius: 4px;
-  transition: background-color 0.15s ease;
+  border-radius: 0;
+  transition: all 0.15s ease;
 }
 
 .toolbox-model-list li:hover {
-  background-color: #2e3a60;
+  color: #e2e8f0;
+  background-color: rgba(139, 92, 246, 0.18);
 }
 
 .toolbox-model-list li.active {
-  color: #cfd6ff;
-  background-color: #3f4e85;
+  color: #8b5cf6;
+  border-left: 1px solid #7c3aed;
+  padding-left: 5px;
 }
 
 /* ===============================
    FUTURE ANIMATIONS
 ================================= */
 
-/* Placeholder per animazioni future */
 .fade-in {
   animation: fadeIn 0.6s ease-in-out;
 }
@@ -339,4 +359,3 @@ html, body {
   from { opacity: 0; transform: scale(0.95); }
   to   { opacity: 1; transform: scale(1); }
 }
-

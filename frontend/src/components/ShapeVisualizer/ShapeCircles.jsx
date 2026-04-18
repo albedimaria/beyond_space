@@ -1,19 +1,18 @@
 import { motion } from "framer-motion";
-import { circleProps } from "./shapeLayouts";
+import { nodeOuter, nodeInner } from "./shapeLayouts";
 
 function ShapeCircles({ layout, files }) {
     return layout.points.map(({ x, y }, i) => (
-        <motion.circle
-            key={`circle-${i}`}
-            cx={x}
-            cy={y}
-            {...circleProps}
+        <motion.g
+            key={`node-${i}`}
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: i * 0.05 }}
         >
             <title>{files[i]?.name}</title>
-        </motion.circle>
+            <circle cx={x} cy={y} {...nodeOuter} />
+            <circle cx={x} cy={y} {...nodeInner} />
+        </motion.g>
     ));
 }
 

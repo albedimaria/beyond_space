@@ -1,8 +1,7 @@
 
-export const circleProps = {
-    r: 20,
-    fill: "#4e79a7",
-};
+// node rendering constants — outer ring + inner dot
+export const nodeOuter = { r: 8,   fill: "none",    stroke: "#2d2756", strokeWidth: 1 };
+export const nodeInner = { r: 2.5, fill: "#7c3aed", stroke: "none" };
 
 export const layouts = {
     1: {
